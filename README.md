@@ -1,6 +1,6 @@
 # pv-system-model
 
-This project investigates photovoltaic (PV) cells and their role in a renewable energy system.
+This software project investigates photovoltaic (PV) cells and their role in a renewable energy system.
 It aims to model three aspects of a miniature solar energy system:
      1. How a PV cell behaves under different levels of irradiance, and the resulting I-V and P-V curves,
         modelling a solar cell.
