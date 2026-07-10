@@ -5,7 +5,7 @@ different irradiance levels using the diode equation.
 
 AUTHOR: Hector French
 WRITTEN: 8/7/26
-LAST UPDATED: 8/7/26
+LAST UPDATED: 9/7/26
 """
 
 import numpy as np
@@ -45,7 +45,7 @@ def f(I, V, G):
     return I_ph(G) - I_0 * (np.exp((V + I*R_s) / (n*V_t)) - 1) - (V + I*R_s) / R_sh - I
 
 
-def plot_curves(curve_xs, curve_ys, curve_labels, title="Curve", x_label="", y_label="", save_fig=False, fig_name="Graph"):
+def plot_curves(curve_xs, curve_ys, curve_labels=None, title="Curve", x_label="", y_label="", save_fig=False, fig_name="Graph"):
     """ Plots curve(s) in a single matplotlib graph using the given numpy arrays. curve_xs and curve_ys are parallel arrays of each curve's x and y values."""
     axes = plt.axes()
     # Loop through each curve and plot x against each y.
@@ -68,15 +68,11 @@ def plot_curves(curve_xs, curve_ys, curve_labels, title="Curve", x_label="", y_l
     plt.show()
 
 
-def main():
-    """ The main function."""
-    # Hard-coded for now; to test.
-    G_s = [200, 400, 600, 800, 1000]
-
-    curve_xs = [] # An array of each curve's array of x values.
-    curve_I_ys = [] # An array of each IV curve's y values.
-    curve_P_ys = [] # An array of each PV curve's y values.
-    curve_labels = [] # Labelled based on irradiance.
+def get_iv_pv_data(G_s):
+    """ Given a set of irradiances, calculate V, I and P values."""
+    curve_xs = []  # An array of each curve's array of x values.
+    curve_I_ys = []  # An array of each IV curve's y values.
+    curve_P_ys = []  # An array of each PV curve's y values.
 
     # Loop through each irradiance to plot the corresponding curve.
     for g in G_s:
@@ -85,14 +81,28 @@ def main():
         I_s = np.array([])
         # Calculate the corresponding I
         for v in V_s:
-            I_s = np.append(I_s, brentq(f, 0, I_ph(g), args=(v,g,)))
+            I_s = np.append(I_s, brentq(f, 0, I_ph(g), args=(v, g,)))
         # Calculate the corresponding P
         P_s = V_s * I_s
 
         curve_xs.append(V_s)
         curve_I_ys.append(I_s)
         curve_P_ys.append(P_s)
+    return curve_xs, curve_I_ys, curve_P_ys
+
+
+def main():
+    """ The main function."""
+    # Hard-coded for now; to test.
+    G_s = [200, 400, 600, 800, 1000]
+
+    # Assign each curve a label based on irradiance.
+    curve_labels = []
+    for g in G_s:
         curve_labels.append(f"{g} W/m^2")
+
+    # Calculate IV and PV curve points
+    curve_xs, curve_I_ys, curve_P_ys = get_iv_pv_data(G_s)
 
     # Plot the IV curve
     plot_curves(curve_xs, curve_I_ys, curve_labels, "Solar Cell I-V Curve", "Voltage (V)", "Current (I)", save_fig=True, fig_name="IV_curves")
