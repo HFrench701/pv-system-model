@@ -69,7 +69,7 @@ def plot_curves(curve_xs, curve_ys, curve_labels=None, title="Curve", x_label=""
 
 
 def get_iv_pv_data(G_s):
-    """ Given a set of irradiances, calculate V, I and P values."""
+    """ Given a set of irrasdiances, calculate V, I and P values."""
     curve_xs = []  # An array of each curve's array of x values.
     curve_I_ys = []  # An array of each IV curve's y values.
     curve_P_ys = []  # An array of each PV curve's y values.
@@ -81,7 +81,11 @@ def get_iv_pv_data(G_s):
         I_s = np.array([])
         # Calculate the corresponding I
         for v in V_s:
-            I_s = np.append(I_s, brentq(f, 0, I_ph(g), args=(v, g,)))
+            if g == 0:
+                I_s = np.append(I_s, 0)
+            else:
+                I_s = np.append(I_s, brentq(f, 0, I_ph(g), args=(v, g,)))
+
         # Calculate the corresponding P
         P_s = V_s * I_s
 

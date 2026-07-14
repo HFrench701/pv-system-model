@@ -38,15 +38,15 @@ def get_current_vs_time_data():
     timestamps = data["hourly"]["time"]
     hours = np.array([timestamp.split('T')[1].split(':')[0] for timestamp in timestamps], dtype=int)
     hours = hours * 3600
-    return currents, hours
+    return irradiances, currents, hours
 
 
 def main():
     """ The main function."""
-    currents, hours = get_current_vs_time_data()
+    irradiances, currents, hours = get_current_vs_time_data()
     plot_curves([hours], [currents], None, f"Estimated PV Current - {nice_date(date)}, {location}", "Hour of Day", "Current (A)", False, "Current v. Time Graph Chch 10-7-26")
     time_series_data = np.column_stack((hours, currents))
-    savemat("Data/pv_current.mat", {"pv_current_data": time_series_data})
+    savemat("Data/pv_current.mat", {"pv_current_data": time_series_data, "irradiances": irradiances})
 
 
 main()
